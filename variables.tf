@@ -1,8 +1,3 @@
-variable "cluster_name" {
-  description = "Cluster name"
-  type        = string
-}
-
 variable "cluster_sla" {
   description = "Cluster SLA"
   type        = string
@@ -14,12 +9,6 @@ variable "cluster_sla" {
 variable "region" {
   description = "Cluster Region"
   type        = string
-}
-
-variable "kubernetes_version" {
-  description = "Kubernetes version"
-  type        = string
-  default     = "1.21"
 }
 
 variable "kubeconfig_filename" {
