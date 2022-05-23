@@ -56,7 +56,7 @@ data "azuread_group" "aks_cluster_admins" {
 }
 
 module "cluster" {
-  source = "github.com/caruccio/terraform-azurerm-aks?ref=patch-1"
+  source = "github.com/caruccio/terraform-azurerm-aks?ref=master"
   #source  = "Azure/aks/azurerm"
   #version = "4.14.0"
 
