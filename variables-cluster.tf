@@ -20,22 +20,25 @@ variable "rbac_aad_admin_group_names" {
 variable "default_node_pool" {
   description = "AKS default node pool. Reserved for AKs stuff."
   default = {
-    name                   = "system"
-    type                   = "VirtualMachineScaleSets"
-    enable_auto_scaling    = true
-    min_count              = 1
-    max_count              = 2
-    vm_size                = "Standard_D2s_v3"
-    max_pods               = 110
-    node_labels            = {}
-    node_taints            = []
-    node_tags              = {}
-    zones                  = []
-    os_disk_size_gb        = 50
-    os_disk_type           = null
-    enable_node_public_ip  = false
-    enable_host_encryption = true
-    vnet_subnet_id         = null
+    enable_auto_scaling          = true
+    enable_host_encryption       = true
+    enable_node_public_ip        = false
+    max_count                    = 2
+    max_pods                     = 110
+    min_count                    = 1
+    name                         = "system"
+    node_labels                  = {}
+    node_taints                  = []
+    node_tags                    = {}
+    only_critical_addons_enabled = true
+    orchestrator_version         = null
+    os_disk_size_gb              = 50
+    os_disk_type                 = null
+    os_sku                       = null
+    type                         = "VirtualMachineScaleSets"
+    vm_size                      = "Standard_D2s_v3"
+    vnet_subnet_id               = null
+    zones                        = []
   }
 }
 
@@ -43,13 +46,13 @@ variable "node_pools" {
   description = "AKS node pools. Will merge with var.default_node_pool"
   default = {
     infra = {
-      agents_min_count = 2
-      agents_max_count = 2
-      agents_taints    = ["dedicated=infra:NoSchedule"]
+      min_count   = 2
+      max_count   = 2
+      node_taints = ["dedicated=infra:NoSchedule"]
     }
     app = {
-      agents_min_count = 2
-      agents_max_count = 4
+      min_count = 2
+      max_count = 4
     }
   }
 }

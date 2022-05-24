@@ -4,23 +4,10 @@ variable "cluster_sla" {
   default     = "none"
 }
 
-##TODO: UPDATE
-## This may be already required by cloud provider
-variable "region" {
-  description = "Cluster Region"
-  type        = string
-}
-
 variable "kubeconfig_filename" {
   description = "Kubeconfig path"
   type        = string
   default     = "~/.kube/config"
-}
-
-variable "get_kubeconfig_command" {
-  description = "Command to create/update kubeconfig"
-  type        = string
-  default     = "true"
 }
 
 variable "flux_git_repo" {
@@ -64,12 +51,6 @@ variable "cronitor_pagerduty_key" {
   default     = ""
 }
 
-variable "api_endpoint" {
-  description = "Kubernetes API endpoint"
-  type        = string
-  default     = "https://localhost:6443"
-}
-
 variable "manifests_template_vars" {
   description = "Template vars for use by cluster manifests"
   type        = any
@@ -82,4 +63,10 @@ variable "teleport_auth_token" {
   description = "Teleport Agent auth token"
   type        = string
   default     = ""
+}
+
+variable "use_kubeconfig" {
+  description = "Should kubernetes/kubectl providers use local kubeconfig or credentials from cloud module"
+  type        = bool
+  default     = false
 }

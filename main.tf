@@ -60,21 +60,19 @@ module "cluster" {
   #source  = "Azure/aks/azurerm"
   #version = "4.14.0"
 
-  resource_group_name  = var.resource_group_name
+  admin_username       = var.admin_username
   client_id            = var.client_id
   client_secret        = var.client_secret
-  kubernetes_version   = var.kubernetes_version
-  orchestrator_version = var.orchestrator_version != null ? var.orchestrator_version : var.kubernetes_version
-  prefix               = var.prefix
   cluster_name         = var.cluster_name
+  kubernetes_version   = var.kubernetes_version
+  network_plugin       = var.network_policy == "azure" ? "azure" : var.network_plugin
+  network_policy       = var.network_policy
+  orchestrator_version = var.default_node_pool.orchestrator_version != null ? var.default_node_pool.orchestrator_version : var.kubernetes_version
+  prefix               = var.prefix
+  public_ssh_key       = var.public_ssh_key
+  resource_group_name  = var.resource_group_name
   sku_tier             = var.sku_tier
   tags                 = var.tags
-
-  allowed_maintenance_windows     = var.allowed_maintenance_windows
-  not_allowed_maintenance_windows = var.not_allowed_maintenance_windows
-
-  key_vault_secrets_provider_enabled = var.key_vault_secrets_provider_enabled
-  key_vault_secrets_provider         = var.key_vault_secrets_provider
 
   private_cluster_enabled          = var.private_cluster_enabled
   private_dns_zone_id              = var.private_dns_zone_enabled ? data.azurerm_private_dns_zone.aks[0].id : var.private_dns_zone_name
@@ -101,14 +99,11 @@ module "cluster" {
   enable_node_public_ip  = var.default_node_pool.enable_node_public_ip
   enable_host_encryption = var.default_node_pool.enable_host_encryption
   vnet_subnet_id         = var.default_node_pool.vnet_subnet_id
-
-  network_plugin     = var.network_policy == "azure" ? "azure" : var.network_plugin
-  network_policy     = var.network_policy
-  dns_service_ip     = var.dns_service_ip
-  docker_bridge_cidr = var.docker_bridge_cidr
-  outbound_type      = var.outbound_type
-  service_cidr       = var.service_cidr
-  pod_cidr           = var.network_plugin == "azure" ? null : var.pod_cidr
+  dns_service_ip         = var.dns_service_ip
+  docker_bridge_cidr     = var.docker_bridge_cidr
+  outbound_type          = var.outbound_type
+  service_cidr           = var.service_cidr
+  pod_cidr               = var.network_plugin == "azure" ? null : var.pod_cidr
 
   enable_role_based_access_control = var.enable_role_based_access_control
   rbac_aad_managed                 = var.rbac_aad_managed
@@ -118,6 +113,9 @@ module "cluster" {
   rbac_aad_client_app_id     = var.rbac_aad_client_app_id
   rbac_aad_server_app_id     = var.rbac_aad_server_app_id
   rbac_aad_server_app_secret = var.rbac_aad_server_app_secret
+
+  key_vault_secrets_provider_enabled = var.key_vault_secrets_provider_enabled
+  key_vault_secrets_provider         = var.key_vault_secrets_provider
 
   ingress_application_gateway_enabled     = var.ingress_application_gateway_enabled
   ingress_application_gateway_name        = var.ingress_application_gateway_name
@@ -129,5 +127,8 @@ module "cluster" {
   log_analytics_workspace_name    = var.log_analytics_workspace_name
   log_analytics_workspace_sku     = var.log_analytics_workspace_sku
   log_retention_in_days           = var.log_retention_in_days
+
+  allowed_maintenance_windows     = var.allowed_maintenance_windows
+  not_allowed_maintenance_windows = var.not_allowed_maintenance_windows
 
 }
