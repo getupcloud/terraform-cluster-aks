@@ -19,3 +19,8 @@ provider "azurerm" {
 
   features {}
 }
+
+# Configure the Azure Active Directory Provider
+provider "azuread" {
+  tenant_id = var.ad_tenant_id
+}
