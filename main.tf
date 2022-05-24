@@ -79,7 +79,7 @@ module "cluster" {
   http_application_routing_enabled = var.http_application_routing_enabled
   azure_policy_enabled             = var.azure_policy_enabled
   identity_type                    = var.identity_type
-  identity_ids                     = var.identity_ids
+  identity_ids                     = local.identity_ids
 
   ## default nodepool
   default_node_pool_name = var.default_node_pool.name
