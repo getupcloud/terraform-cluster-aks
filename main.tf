@@ -51,7 +51,7 @@ data "azurerm_resource_group" "main" {
 }
 
 data "azuread_group" "aks_cluster_admins" {
-  for_each     = var.rbac_aad_admin_group_names
+  for_each     = toset(var.rbac_aad_admin_group_names)
   display_name = each.key
 }
 
