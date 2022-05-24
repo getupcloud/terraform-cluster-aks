@@ -75,6 +75,7 @@ module "cluster" {
   tags                 = var.tags
 
   private_cluster_enabled          = var.private_cluster_enabled
+  api_server_authorized_ip_ranges  = var.api_server_authorized_ip_ranges
   private_dns_zone_id              = var.private_dns_zone_enabled ? data.azurerm_private_dns_zone.aks[0].id : var.private_dns_zone_name
   http_application_routing_enabled = var.http_application_routing_enabled
   azure_policy_enabled             = var.azure_policy_enabled
@@ -132,5 +133,4 @@ module "cluster" {
 
   allowed_maintenance_windows     = var.allowed_maintenance_windows
   not_allowed_maintenance_windows = var.not_allowed_maintenance_windows
-
 }
