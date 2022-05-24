@@ -8,7 +8,7 @@ data "azurerm_private_dns_zone" "aks" {
 
 resource "azurerm_role_assignment" "aks_private_dns_zone" {
   provider = azurerm.acr
-  for_each = var.private_dns_zone_enabled ? (contains(var.identity_type, "UserAssigned") ? var.identity_ids : [module.cluster.system_assigned_identity.principal_id]) : []
+  for_each = var.private_dns_zone_enabled ? (try(regex("\\bUserAssigned\\b", var.identity_type), "") == "UserAssigned" ? var.identity_ids : [module.cluster.system_assigned_identity.principal_id]) : []
 
   principal_id                     = each.value
   role_definition_name             = var.private_dns_zone_role_definition_name
