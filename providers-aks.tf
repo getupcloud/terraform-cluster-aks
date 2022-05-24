@@ -1,6 +1,9 @@
 provider "azurerm" {
-  subscription_id = var.subscription_id
-
+  skip_provider_registration = true
+  subscription_id            = var.subscription_id
+  tenant_id                  = var.tenant_id
+  client_id                  = var.client_id
+  client_secret              = var.client_secret
   features {}
 }
 
@@ -18,9 +21,4 @@ provider "azurerm" {
   subscription_id = var.acr_subscription_id == "" ? var.subscription_id : var.acr_subscription_id
 
   features {}
-}
-
-# Configure the Azure Active Directory Provider
-provider "azuread" {
-  tenant_id = var.ad_tenant_id
 }
