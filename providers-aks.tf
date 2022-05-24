@@ -4,6 +4,7 @@ provider "azurerm" {
   tenant_id                  = var.tenant_id
   client_id                  = var.client_id
   client_secret              = var.client_secret
+
   features {}
 }
 
@@ -11,6 +12,9 @@ provider "azurerm" {
 provider "azurerm" {
   alias           = "private_dns_zone"
   subscription_id = var.private_dns_zone_subscription_id == "" ? var.subscription_id : var.private_dns_zone_subscription_id
+  tenant_id                  = var.tenant_id
+  client_id                  = var.client_id
+  client_secret              = var.client_secret
 
   features {}
 }
@@ -19,6 +23,9 @@ provider "azurerm" {
 provider "azurerm" {
   alias           = "acr"
   subscription_id = var.acr_subscription_id == "" ? var.subscription_id : var.acr_subscription_id
+  tenant_id                  = var.tenant_id
+  client_id                  = var.client_id
+  client_secret              = var.client_secret
 
   features {}
 }
