@@ -118,7 +118,7 @@ variable "client_id" {
 
 variable "client_secret" {
   type        = string
-  description = "(optional) the client secret (password) for the service principal used for the aks deployment."
+  description = "(Optional) The Client Secret (password) for the Service Principal used for the AKS deployment."
   default     = null
 }
 
