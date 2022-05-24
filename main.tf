@@ -84,9 +84,9 @@ module "cluster" {
   ## default nodepool
   default_node_pool_name = var.default_node_pool.name
   enable_auto_scaling    = var.default_node_pool.enable_auto_scaling
-  node_count             = var.default_node_pool.node_count
   min_count              = var.default_node_pool.min_count
   max_count              = var.default_node_pool.max_count
+  node_count             = try(var.default_node_pool.node_count, null)
   max_pods               = var.default_node_pool.max_pods
   type                   = var.default_node_pool.type
   vm_size                = var.default_node_pool.vm_size

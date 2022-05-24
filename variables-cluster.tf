@@ -27,6 +27,7 @@ variable "default_node_pool" {
     max_pods                     = 110
     min_count                    = 1
     name                         = "system"
+    node_count                   = null
     node_labels                  = {}
     node_taints                  = []
     node_tags                    = {}
