@@ -55,6 +55,19 @@ data "azuread_group" "aks_cluster_admins" {
   display_name = each.key
 }
 
+data "azurerm_virtual_network" "node_vnet" {
+  count               = var.node_vnet_name != null ? 1 : 0
+  name                = var.node_vnet_name
+  resource_group_name = var.node_resource_group != "" ? var.node_resource_group : data.azurerm_resource_group.main.name
+}
+
+data "azurerm_subnet" "node_subnet" {
+  count                = (var.node_subnet_name != null && var.node_vnet_name != null) ? 1 : 0
+  name                 = var.node_subnet_name
+  virtual_network_name = data.azurerm_virtual_network.node_vnet[0].name
+  resource_group_name  = data.azurerm_virtual_network.node_vnet[0].resource_group_name
+}
+
 module "cluster" {
   source = "github.com/caruccio/terraform-azurerm-aks?ref=master"
   #source  = "Azure/aks/azurerm"
@@ -99,7 +112,7 @@ module "cluster" {
   os_disk_type           = var.default_node_pool.os_disk_type
   enable_node_public_ip  = var.default_node_pool.enable_node_public_ip
   enable_host_encryption = var.default_node_pool.enable_host_encryption
-  vnet_subnet_id         = var.default_node_pool.vnet_subnet_id
+  vnet_subnet_id         = length(data.azurerm_subnet.node_subnet) > 0 ? data.azurerm_subnet.node_subnet[0].id : var.default_node_pool.vnet_subnet_id
   dns_service_ip         = var.dns_service_ip
   docker_bridge_cidr     = var.docker_bridge_cidr
   outbound_type          = var.outbound_type
