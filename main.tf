@@ -112,7 +112,7 @@ module "cluster" {
   os_disk_type           = var.default_node_pool.os_disk_type
   enable_node_public_ip  = var.default_node_pool.enable_node_public_ip
   enable_host_encryption = var.default_node_pool.enable_host_encryption
-  vnet_subnet_id         = length(data.azurerm_subnet.node_subnet) > 0 ? data.azurerm_subnet.node_subnet[0].id : var.default_node_pool.vnet_subnet_id
+  vnet_subnet_id         = length(data.azurerm_subnet.node_subnet) > 0 ? data.azurerm_subnet.node_subnet[0].id : try(var.default_node_pool.vnet_subnet_id, null)
   dns_service_ip         = var.dns_service_ip
   docker_bridge_cidr     = var.docker_bridge_cidr
   outbound_type          = var.outbound_type
