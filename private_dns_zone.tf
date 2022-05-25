@@ -26,7 +26,7 @@ resource "azurerm_role_assignment" "aks_private_dns_zone_system_assigned_identit
 
 resource "azurerm_role_assignment" "aks_private_dns_zone_user_assigned_identity" {
   provider = azurerm.acr
-  for_each = toset([for id in(var.identity_ids != null ? var.identity_ids : []) : id if(var.private_dns_zone_enabled && local.has_user_assigned_identity)])
+  for_each = toset([for id in local.identity_ids : id if(var.private_dns_zone_enabled && local.has_user_assigned_identity)])
 
   principal_id                     = each.key
   role_definition_name             = var.private_dns_zone_role_definition_name
