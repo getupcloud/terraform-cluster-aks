@@ -75,12 +75,12 @@ module "cluster" {
   tags                 = var.tags
 
   private_cluster_enabled          = var.private_cluster_enabled
-  api_server_authorized_ip_ranges  = var.api_server_authorized_ip_ranges
+  api_server_authorized_ip_ranges  = var.private_cluster_enabled ? null : var.api_server_authorized_ip_ranges
   private_dns_zone_id              = var.private_dns_zone_enabled ? data.azurerm_private_dns_zone.aks[0].id : var.private_dns_zone_name
   http_application_routing_enabled = var.http_application_routing_enabled
   azure_policy_enabled             = var.azure_policy_enabled
   identity_type                    = var.identity_type
-  identity_ids                     = local.identity_ids
+  identity_ids                     = [for id in local.identities : id.id]
 
   ## default nodepool
   default_node_pool_name = var.default_node_pool.name
