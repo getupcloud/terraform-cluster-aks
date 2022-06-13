@@ -97,6 +97,7 @@ module "cluster" {
 
   ## default nodepool
   default_node_pool_name = var.default_node_pool.name
+  node_resource_group    = var.node_resource_group
   enable_auto_scaling    = var.default_node_pool.enable_auto_scaling
   min_count              = var.default_node_pool.min_count
   max_count              = var.default_node_pool.max_count
