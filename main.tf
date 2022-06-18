@@ -58,7 +58,7 @@ data "azuread_group" "aks_cluster_admins" {
 data "azurerm_virtual_network" "node_vnet" {
   count               = var.node_vnet_name != null ? 1 : 0
   name                = var.node_vnet_name
-  resource_group_name = var.node_resource_group != "" ? var.node_resource_group : data.azurerm_resource_group.main.name
+  resource_group_name = var.node_vnet_resource_group != "" ? var.node_vnet_resource_group : data.azurerm_resource_group.main.name
 }
 
 data "azurerm_subnet" "node_subnet" {
