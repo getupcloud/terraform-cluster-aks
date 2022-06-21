@@ -73,6 +73,11 @@ module "cluster" {
   #source  = "Azure/aks/azurerm"
   #version = "4.14.0"
 
+  depends_on = [
+    azurerm_role_assignment.aks_private_dns_zone_user_assigned_identity_names,
+    azurerm_role_assignment.aks_private_dns_zone_user_assigned_identity_ids
+  ]
+
   admin_username       = var.admin_username
   client_id            = var.client_id
   client_secret        = var.client_secret
@@ -93,7 +98,7 @@ module "cluster" {
   http_application_routing_enabled = var.http_application_routing_enabled
   azure_policy_enabled             = var.azure_policy_enabled
   identity_type                    = var.identity_type
-  identity_ids                     = [for id in local.identities : id.id]
+  identity_ids                     = local.identity_ids
 
   ## default nodepool
   default_node_pool_name = var.default_node_pool.name
