@@ -26,7 +26,7 @@ resource "azurerm_role_assignment" "aks_private_dns_zone_system_assigned_identit
 
 resource "azurerm_role_assignment" "aks_private_dns_zone_user_assigned_identity_names" {
   provider = azurerm.private_dns_zone
-  for_each = (var.private_dns_zone_enabled && local.has_system_assigned_identity) ? azurerm_user_assigned_identity.aks_cluster_user_assigned_identity : {}
+  for_each = (var.private_dns_zone_enabled && local.has_user_assigned_identity) ? azurerm_user_assigned_identity.aks_cluster_user_assigned_identity : {}
 
   principal_id                     = each.value.principal_id
   role_definition_name             = var.private_dns_zone_role_definition_name
@@ -36,7 +36,7 @@ resource "azurerm_role_assignment" "aks_private_dns_zone_user_assigned_identity_
 
 resource "azurerm_role_assignment" "aks_private_dns_zone_user_assigned_identity_ids" {
   provider = azurerm.private_dns_zone
-  for_each = toset((var.private_dns_zone_enabled && local.has_system_assigned_identity) ? var.identity_ids : [])
+  for_each = toset((var.private_dns_zone_enabled && local.has_user_assigned_identity) ? var.identity_ids : [])
 
   principal_id                     = each.key
   role_definition_name             = var.private_dns_zone_role_definition_name

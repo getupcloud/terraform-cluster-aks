@@ -79,9 +79,30 @@ variable "node_pools" {
 variable "azure_modules" {
   description = "Configure Azure modules to install"
   type        = any
+  default     = {}
+}
+
+variable "azure_modules_defaults" {
+  description = "Configure Azure modules to install (defaults)"
+  type = object({
+    certmanager = object({
+      enabled         = bool
+      hosted_zone_ids = list(string)
+    })
+    loki   = object({ enabled = bool })
+    velero = object({ enabled = bool })
+  })
+
   default = {
-    velero : {
-      enabled : true
+    certmanager = {
+      enabled         = false
+      hosted_zone_ids = []
+    }
+    loki = {
+      enabled = true
+    }
+    velero = {
+      enabled = true
     }
   }
 }

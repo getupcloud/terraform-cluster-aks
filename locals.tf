@@ -20,4 +20,7 @@ locals {
       np
     )
   }
+
+  azure_modules        = merge(var.azure_modules_defaults, var.azure_modules)
+  azure_modules_output = {}
 }

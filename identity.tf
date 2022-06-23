@@ -1,7 +1,7 @@
 locals {
   identity_ids = concat(
     var.identity_ids,
-    [ for id in azurerm_user_assigned_identity.aks_cluster_user_assigned_identity : id.id ]
+    [for id in azurerm_user_assigned_identity.aks_cluster_user_assigned_identity : id.id]
   )
 }
 
