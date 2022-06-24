@@ -12,3 +12,21 @@ resource "azurerm_user_assigned_identity" "aks_cluster_user_assigned_identity" {
   location            = data.azurerm_resource_group.main.location
   tags                = var.tags
 }
+
+resource "azurerm_role_assignment" "aks_vnet_user_assigned_identity_names" {
+  for_each = (var.private_dns_zone_enabled && local.has_user_assigned_identity) ? azurerm_user_assigned_identity.aks_cluster_user_assigned_identity : {}
+
+  principal_id                     = each.value.principal_id
+  role_definition_name             = "Network Contributor"
+  scope                            = data.azurerm_virtual_network.node_vnet[0].id
+  skip_service_principal_aad_check = var.private_dns_zone_skip_service_principal_aad_check
+}
+
+resource "azurerm_role_assignment" "aks_vnet_user_assigned_identity_ids" {
+  for_each = toset((var.private_dns_zone_enabled && local.has_user_assigned_identity) ? var.identity_ids : [])
+
+  principal_id                     = each.key
+  role_definition_name             = "Network Contributor"
+  scope                            = data.azurerm_virtual_network.node_vnet[0].id
+  skip_service_principal_aad_check = var.private_dns_zone_skip_service_principal_aad_check
+}

@@ -43,4 +43,3 @@ resource "azurerm_role_assignment" "aks_private_dns_zone_user_assigned_identity_
   scope                            = data.azurerm_private_dns_zone.aks[0].id
   skip_service_principal_aad_check = var.private_dns_zone_skip_service_principal_aad_check
 }
-
