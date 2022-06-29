@@ -70,3 +70,15 @@ variable "use_kubeconfig" {
   type        = bool
   default     = false
 }
+
+variable "pre_create" {
+  description = "Scripts to execute before cluster is created."
+  type        = list(string)
+  default     = []
+}
+
+variable "post_create" {
+  description = "Scripts to execute after cluster is created."
+  type        = list(string)
+  default     = []
+}
