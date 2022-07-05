@@ -39,10 +39,10 @@ variable "customer_name" {
   type        = string
 }
 
-variable "cronitor_api_key" {
-  description = "Cronitor API key. Leave empty to destroy"
-  type        = string
-  default     = ""
+variable "cronitor_enabled" {
+  description = "Creates and enables Cronitor monitor."
+  type        = bool
+  default     = false
 }
 
 variable "cronitor_pagerduty_key" {
@@ -51,12 +51,22 @@ variable "cronitor_pagerduty_key" {
   default     = ""
 }
 
+variable "opsgenie_enabled" {
+  description = "Creates and enables Opsgenie integration."
+  type        = bool
+  default     = false
+}
+
+variable "opsgenie_team_name" {
+  description = "Opsgenie Owner team name of the integration."
+  type        = string
+  default     = "Operations"
+}
+
 variable "manifests_template_vars" {
   description = "Template vars for use by cluster manifests"
   type        = any
-  default = {
-    alertmanager_pagerduty_key : ""
-  }
+  default     = {}
 }
 
 variable "teleport_auth_token" {
