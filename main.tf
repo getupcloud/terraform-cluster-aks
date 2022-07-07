@@ -89,7 +89,8 @@ module "cluster" {
 
   depends_on = [
     azurerm_role_assignment.aks_private_dns_zone_user_assigned_identity_names,
-    azurerm_role_assignment.aks_private_dns_zone_user_assigned_identity_ids
+    azurerm_role_assignment.aks_private_dns_zone_user_assigned_identity_ids,
+    shell_script.pre_create
   ]
 
   admin_username       = var.admin_username

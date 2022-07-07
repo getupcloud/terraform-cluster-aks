@@ -24,6 +24,6 @@ resource "shell_script" "post_create" {
   environment = {}
 
   depends_on = [
-    module.cluster.aks_id
+    module.flux
   ]
 }
