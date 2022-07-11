@@ -27,20 +27,21 @@ module "flux" {
 }
 
 module "cronitor" {
-  source = "github.com/getupcloud/terraform-module-cronitor?ref=v1.3"
+  source = "github.com/getupcloud/terraform-module-cronitor?ref=v1.4"
 
-  api_endpoint     = module.cluster.kube_admin_config.host
-  cronitor_enabled = var.cronitor_enabled
-  cluster_name     = var.cluster_name
-  cluster_sla      = var.cluster_sla
-  customer_name    = var.customer_name
-  suffix           = "aks"
-  tags             = [module.cluster.location]
-  pagerduty_key    = var.cronitor_pagerduty_key
+  api_endpoint      = module.cluster.kube_admin_config.host
+  cronitor_enabled  = var.cronitor_enabled
+  cluster_name      = var.cluster_name
+  cluster_sla       = var.cluster_sla
+  customer_name     = var.customer_name
+  suffix            = "aks"
+  tags              = [module.cluster.location]
+  pagerduty_key     = var.cronitor_pagerduty_key
+  notification_list = var.cronitor_notification_list
 }
 
 module "opsgenie" {
-  source = "github.com/getupcloud/terraform-module-opsgenie?ref=main"
+  source = "github.com/getupcloud/terraform-module-opsgenie?ref=v1.2"
 
   opsgenie_enabled = var.opsgenie_enabled
   customer_name    = var.customer_name
@@ -83,6 +84,7 @@ data "azurerm_subnet" "node_subnet" {
 }
 
 module "cluster" {
+  # tflint-ignore: terraform_module_pinned_source
   source = "github.com/caruccio/terraform-azurerm-aks?ref=master"
   #source  = "Azure/aks/azurerm"
   #version = "4.14.0"
