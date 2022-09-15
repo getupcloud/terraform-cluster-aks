@@ -1,8 +1,8 @@
 locals {
-  api_endpoint               = module.cluster.kube_admin_config.host
-  client_certificate         = base64decode(module.cluster.kube_admin_config.client_certificate)
-  client_key                 = base64decode(module.cluster.kube_admin_config.client_key)
-  certificate_authority_data = base64decode(module.cluster.kube_admin_config.cluster_ca_certificate)
+  api_endpoint               = module.cluster.kube_admin_config_raw.host
+  client_certificate         = base64decode(module.cluster.kube_admin_config_raw.client_certificate)
+  client_key                 = base64decode(module.cluster.kube_admin_config_raw.client_key)
+  certificate_authority_data = base64decode(module.cluster.kube_admin_config_raw.cluster_ca_certificate)
 
   suffix = random_string.suffix.result
   secret = random_string.secret.result

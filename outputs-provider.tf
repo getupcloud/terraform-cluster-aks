@@ -29,7 +29,7 @@ output "http_application_routing_zone_name" {
 }
 
 output "identity" {
-  value       = module.cluster.identity
+  value       = module.cluster.cluster_identity
   description = "The Principal and Tenant IDs associated with this Managed Service Identity."
 }
 
@@ -39,26 +39,21 @@ output "kubelet_identity" {
 }
 
 output "kube_admin_config" {
-  value       = module.cluster.kube_admin_config
+  value       = module.cluster.kube_admin_config_raw
   description = "Map of credentials to authenticate to Kubernetes as an administrator."
 }
 
 output "kube_config" {
-  value       = module.cluster.kube_config
+  value       = module.cluster.kube_config_raw
   description = "Map of credentials to authenticate to Kubernetes as a user."
 }
 
 output "private_key" {
-  value       = module.cluster.private_key
+  value       = module.cluster.generated_cluster_private_ssh_key
   description = "Private key data in PEM (RFC 1421) and OpenSSH PEM (RFC 4716) format."
 }
 
 output "public_key" {
-  value       = module.cluster.public_key
+  value       = module.cluster.generated_cluster_public_ssh_key
   description = "Public key data in PEM (RFC 1421) and [Authorized Keys](https://www.ssh.com/academy/ssh/authorized_keys/openssh#format-of-the-authorized-keys-file) format."
-}
-
-output "log_analytics_workspace_id" {
-  value       = module.cluster.log_analytics_workspace_id
-  description = "The Log Analytics Workspace ID."
 }

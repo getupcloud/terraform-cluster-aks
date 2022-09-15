@@ -226,6 +226,16 @@ variable "identity_ids" {
 }
 
 # Log analytics
+variable "log_analytics_workspace" {
+  type = object({
+    id   = string
+    name = string
+  })
+  description = "(Optional) Existing azurerm_log_analytics_workspace to attach azurerm_log_analytics_solution. Providing the config disables creation of azurerm_log_analytics_workspace."
+  default     = null
+  nullable    = true
+}
+
 variable "log_analytics_workspace_enabled" {
   type        = bool
   description = "(Optional) Enable the creation of a Log Analytics Workspace."
@@ -234,8 +244,15 @@ variable "log_analytics_workspace_enabled" {
 
 variable "log_analytics_workspace_name" {
   type        = string
-  description = "(Optional) If enabled, the name of the Log Analytics Workspace."
+  description = "(Optional) The name of the Analytics workspace"
   default     = null
+}
+
+variable "log_analytics_workspace_resource_group_name" {
+  type        = string
+  description = "(Optional) Resource group name to create azurerm_log_analytics_solution."
+  default     = null
+  nullable    = true
 }
 
 variable "log_analytics_workspace_sku" {
@@ -294,20 +311,19 @@ variable "key_vault_secrets_provider_enabled" {
   default     = false
 }
 
-variable "key_vault_secrets_provider" {
-  type = list(object({
-    secret_rotation_enabled  = bool
-    secret_rotation_interval = string
-  }))
-  description = "(Optional) A key_vault_secrets_provider block. For more details, please visit [Azure Keyvault Secrets Provider for AKS](https://docs.microsoft.com/en-us/azure/aks/csi-secrets-store-driver)."
-  default = [
-    {
-      secret_rotation_enabled  = true
-      secret_rotation_interval = "2m"
-    }
-  ]
+variable "secret_rotation_enabled" {
+  type        = bool
+  description = "Is secret rotation enabled? This variable is only used when `key_vault_secrets_provider_enabled` is `true` and defaults to `false`"
+  default     = false
+  nullable    = false
 }
 
+variable "secret_rotation_interval" {
+  type        = string
+  description = "The interval to poll for secret rotation. This attribute is only set when `secret_rotation` is `true` and defaults to `2m`"
+  default     = "2m"
+  nullable    = false
+}
 
 # Maintenance windows
 variable "allowed_maintenance_windows" {

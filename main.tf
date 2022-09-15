@@ -29,7 +29,7 @@ module "flux" {
 module "cronitor" {
   source = "github.com/getupcloud/terraform-module-cronitor?ref=v1.4"
 
-  api_endpoint      = module.cluster.kube_admin_config.host
+  api_endpoint      = module.cluster.kube_admin_config_raw.host
   cronitor_enabled  = var.cronitor_enabled
   cluster_name      = var.cluster_name
   cluster_sla       = var.cluster_sla
@@ -85,9 +85,9 @@ data "azurerm_subnet" "node_subnet" {
 
 module "cluster" {
   # tflint-ignore: terraform_module_pinned_source
-  source = "github.com/caruccio/terraform-azurerm-aks?ref=master"
+  source = "github.com/getupcloud/terraform-azurerm-aks?ref=release-5.0.0"
   #source  = "Azure/aks/azurerm"
-  #version = "4.14.0"
+  #version = "5.0.0"
 
   depends_on = [
     azurerm_role_assignment.aks_private_dns_zone_user_assigned_identity_names,
@@ -118,33 +118,33 @@ module "cluster" {
   identity_ids                     = local.identity_ids
 
   ## default nodepool
-  default_node_pool_name = var.default_node_pool.name
-  node_resource_group    = var.node_resource_group
-  enable_auto_scaling    = var.default_node_pool.enable_auto_scaling
-  min_count              = var.default_node_pool.min_count
-  max_count              = var.default_node_pool.max_count
-  node_count             = try(var.default_node_pool.node_count, null)
-  max_pods               = var.default_node_pool.max_pods
-  type                   = var.default_node_pool.type
-  vm_size                = var.default_node_pool.vm_size
-  zones                  = var.default_node_pool.zones
-  node_labels            = var.default_node_pool.node_labels
-  node_tags              = var.default_node_pool.node_tags
-  node_taints            = var.default_node_pool.node_taints
-  os_disk_size_gb        = var.default_node_pool.os_disk_size_gb
-  os_disk_type           = var.default_node_pool.os_disk_type
-  enable_node_public_ip  = var.default_node_pool.enable_node_public_ip
-  enable_host_encryption = var.default_node_pool.enable_host_encryption
-  vnet_subnet_id         = length(data.azurerm_subnet.node_subnet) > 0 ? data.azurerm_subnet.node_subnet[0].id : try(var.default_node_pool.vnet_subnet_id, null)
-  dns_service_ip         = var.dns_service_ip
-  docker_bridge_cidr     = var.docker_bridge_cidr
-  outbound_type          = var.outbound_type
-  service_cidr           = var.service_cidr
-  pod_cidr               = var.network_plugin == "azure" ? null : var.pod_cidr
+  agents_pool_name         = var.default_node_pool.name
+  node_resource_group            = var.node_resource_group
+  enable_auto_scaling            = var.default_node_pool.enable_auto_scaling
+  agents_min_count                      = var.default_node_pool.min_count
+  agents_max_count                      = var.default_node_pool.max_count
+  agents_count                     = try(var.default_node_pool.node_count, null)
+  agents_max_pods                       = var.default_node_pool.max_pods
+  agents_type                           = var.default_node_pool.type
+  agents_size                        = var.default_node_pool.vm_size
+  agents_availability_zones                          = var.default_node_pool.zones
+  agents_labels                    = var.default_node_pool.node_labels
+  agents_tags                      = var.default_node_pool.node_tags
+  agents_taints                    = var.default_node_pool.node_taints
+  os_disk_size_gb                = var.default_node_pool.os_disk_size_gb
+  os_disk_type                   = var.default_node_pool.os_disk_type
+  enable_node_public_ip          = var.default_node_pool.enable_node_public_ip
+  enable_host_encryption         = var.default_node_pool.enable_host_encryption
+  vnet_subnet_id                 = length(data.azurerm_subnet.node_subnet) > 0 ? data.azurerm_subnet.node_subnet[0].id : try(var.default_node_pool.vnet_subnet_id, null)
+  net_profile_dns_service_ip     = var.dns_service_ip
+  net_profile_docker_bridge_cidr = var.docker_bridge_cidr
+  net_profile_outbound_type      = var.outbound_type
+  net_profile_service_cidr       = var.service_cidr
+  net_profile_pod_cidr           = var.network_plugin == "azure" ? null : var.pod_cidr
 
-  enable_role_based_access_control = var.enable_role_based_access_control
-  rbac_aad_managed                 = var.rbac_aad_managed
-  rbac_aad_tenant_id               = var.rbac_aad_tenant_id
+  role_based_access_control_enabled = var.enable_role_based_access_control
+  rbac_aad_managed                  = var.rbac_aad_managed
+  rbac_aad_tenant_id                = var.rbac_aad_tenant_id
 
   # managed
   rbac_aad_admin_group_object_ids = local.rbac_aad_admin_group_object_ids
@@ -154,7 +154,8 @@ module "cluster" {
   rbac_aad_server_app_secret = var.rbac_aad_server_app_secret
 
   key_vault_secrets_provider_enabled = var.key_vault_secrets_provider_enabled
-  key_vault_secrets_provider         = var.key_vault_secrets_provider
+  secret_rotation_enabled            = var.secret_rotation_enabled
+  secret_rotation_interval           = var.secret_rotation_interval
 
   ingress_application_gateway_enabled     = var.ingress_application_gateway_enabled
   ingress_application_gateway_name        = var.ingress_application_gateway_name
@@ -162,10 +163,12 @@ module "cluster" {
   ingress_application_gateway_subnet_cidr = var.ingress_application_gateway_subnet_cidr
   ingress_application_gateway_subnet_id   = var.ingress_application_gateway_subnet_id
 
-  log_analytics_workspace_enabled = var.log_analytics_workspace_enabled
-  log_analytics_workspace_name    = var.log_analytics_workspace_name
-  log_analytics_workspace_sku     = var.log_analytics_workspace_sku
-  log_retention_in_days           = var.log_retention_in_days
+  log_analytics_workspace                     = var.log_analytics_workspace
+  log_analytics_workspace_enabled             = var.log_analytics_workspace_enabled
+  cluster_log_analytics_workspace_name        = var.log_analytics_workspace_name
+  log_analytics_workspace_resource_group_name = var.log_analytics_workspace_resource_group_name
+  log_analytics_workspace_sku                 = var.log_analytics_workspace_sku
+  log_retention_in_days                       = var.log_retention_in_days
 
   allowed_maintenance_windows     = var.allowed_maintenance_windows
   not_allowed_maintenance_windows = var.not_allowed_maintenance_windows
