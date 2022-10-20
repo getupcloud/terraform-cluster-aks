@@ -65,15 +65,18 @@ data "azurerm_resource_group" "main" {
   name = var.resource_group_name
 }
 
-data "azuread_group" "aks_cluster_admins" {
-  for_each     = toset(var.rbac_aad_admin_group_names)
-  display_name = each.key
+data "azurerm_resource_group" "node" {
+  name = var.node_resource_group != "" ? var.node_resource_group : data.azurerm_resource_group.main.name
+}
+
+data "azurerm_resource_group" "node_vnet" {
+  name = var.node_vnet_resource_group != "" ? var.node_vnet_resource_group : data.azurerm_resource_group.main.name
 }
 
 data "azurerm_virtual_network" "node_vnet" {
   count               = var.node_vnet_name != null ? 1 : 0
   name                = var.node_vnet_name
-  resource_group_name = var.node_vnet_resource_group != "" ? var.node_vnet_resource_group : data.azurerm_resource_group.main.name
+  resource_group_name = data.azurerm_resource_group.node_vnet.name
 }
 
 data "azurerm_subnet" "node_subnet" {
@@ -81,6 +84,11 @@ data "azurerm_subnet" "node_subnet" {
   name                 = var.node_subnet_name
   virtual_network_name = data.azurerm_virtual_network.node_vnet[0].name
   resource_group_name  = data.azurerm_virtual_network.node_vnet[0].resource_group_name
+}
+
+data "azuread_group" "aks_cluster_admins" {
+  for_each     = toset(var.rbac_aad_admin_group_names)
+  display_name = each.key
 }
 
 module "cluster" {
