@@ -27,17 +27,17 @@ module "flux" {
 }
 
 module "cronitor" {
-  source = "github.com/getupcloud/terraform-module-cronitor?ref=v1.4"
+  source = "github.com/getupcloud/terraform-module-cronitor?ref=v2.0"
 
-  api_endpoint      = module.cluster.kube_admin_config.host
-  cronitor_enabled  = var.cronitor_enabled
-  cluster_name      = var.cluster_name
-  cluster_sla       = var.cluster_sla
-  customer_name     = var.customer_name
-  suffix            = "aks"
-  tags              = [module.cluster.location]
-  pagerduty_key     = var.cronitor_pagerduty_key
-  notification_list = var.cronitor_notification_list
+  api_endpoint       = module.cluster.kube_admin_config.host
+  cronitor_enabled   = var.cronitor_enabled
+  cluster_name       = var.cluster_name
+  cluster_sla        = var.cluster_sla
+  customer_name      = var.customer_name
+  suffix             = "aks"
+  tags               = [module.cluster.location]
+  pagerduty_key      = var.cronitor_pagerduty_key
+  notification_lists = var.cronitor_notification_lists
 }
 
 module "opsgenie" {
