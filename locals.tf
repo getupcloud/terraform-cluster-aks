@@ -21,11 +21,10 @@ locals {
     )
   }
 
-  modules = merge(var.modules_defaults_provider, var.modules)
   modules_result = {
-    loki : merge(local.modules.loki, { output : {} })
-    velero : merge(local.modules.velero, { output : {} })
-    certmanager : merge(local.modules.certmanager, { output : {} })
+    loki : merge(var.modules.loki, { output : {} })
+    velero : merge(var.modules.velero, { output : {} })
+    certmanager : merge(var.modules.certmanager, { output : {} })
   }
 
   manifests_template_vars = merge(
@@ -34,8 +33,7 @@ locals {
       alertmanager_opsgenie_integration_api_key : try(module.opsgenie.api_key, "")
       secret : random_string.secret.result
       suffix : random_string.suffix.result
-      modules : local.modules
-      modules_output : local.modules_result
+      modules : local.modules_result
     },
     module.teleport-agent.teleport_agent_config,
     var.manifests_template_vars
