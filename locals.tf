@@ -21,6 +21,23 @@ locals {
     )
   }
 
-  azure_modules        = merge(var.azure_modules_defaults, var.azure_modules)
-  azure_modules_output = {}
+  modules = merge(var.modules_defaults_provider, var.modules)
+  modules_result = {
+    loki : merge(local.modules.loki, { output : {} })
+    velero : merge(local.modules.velero, { output : {} })
+    certmanager : merge(local.modules.certmanager, { output : {} })
+  }
+
+  manifests_template_vars = merge(
+    {
+      alertmanager_cronitor_id : try(module.cronitor.cronitor_id, "")
+      alertmanager_opsgenie_integration_api_key : try(module.opsgenie.api_key, "")
+      secret : random_string.secret.result
+      suffix : random_string.suffix.result
+      modules : local.modules
+      modules_output : local.modules_result
+    },
+    module.teleport-agent.teleport_agent_config,
+    var.manifests_template_vars
+  )
 }
