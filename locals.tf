@@ -22,9 +22,9 @@ locals {
   }
 
   modules_result = {
-    loki : merge(var.modules.loki, { output : {} })
-    velero : merge(var.modules.velero, { output : {} })
-    certmanager : merge(var.modules.certmanager, { output : {} })
+    for name, config in merge(var.modules, local.modules) : name => merge(config, {
+      output : config.enabled ? lookup(local.register_modules, name, try(config.output, tomap({}))) : tomap({})
+    })
   }
 
   manifests_template_vars = merge(

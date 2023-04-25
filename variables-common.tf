@@ -44,10 +44,15 @@ variable "customer_name" {
   type        = string
 }
 
-variable "flux_debug" {
-  description = "Dump debug info to file .debug-flux.json"
-  type        = bool
-  default     = false
+variable "cluster_provider" {
+  description = "Cluster provider name"
+  type        = string
+  default     = "none"
+
+  validation {
+    condition     = contains(["aws", "azure", "do", "gcp", "none", "oci"], var.cluster_provider)
+    error_message = "The Cluster Provider is invalid."
+  }
 }
 
 variable "flux_git_repo" {
@@ -60,6 +65,12 @@ variable "flux_version" {
   description = "Flux version to install"
   type        = string
   default     = "v0.35.0"
+}
+
+variable "flux_install_file" {
+  description = "Use this file to install flux instead default files. Using this options will ignore var.flux_version"
+  type        = string
+  default     = ""
 }
 
 variable "flux_wait" {
@@ -103,35 +114,6 @@ variable "modules" {
   default     = {}
 }
 
-variable "modules_defaults" {
-  description = "Configure modules to install (defaults)"
-  type = object({
-    linkerd             = object({ enabled = bool })
-    linkerd-cni         = object({ enabled = bool })
-    linkerd-viz         = object({ enabled = bool })
-    trivy               = object({ enabled = bool })
-    kube_opex_analytics = object({ enabled = bool })
-  })
-
-  default = {
-    linkerd = {
-      enabled = false
-    }
-    linkerd-cni = {
-      enabled = false
-    }
-    linkerd-viz = {
-      enabled = false
-    }
-    trivy = {
-      enabled = false
-    }
-    kube_opex_analytics = {
-      enabled = false
-    }
-  }
-}
-
 variable "opsgenie_enabled" {
   description = "Creates and enables Opsgenie integration."
   type        = bool
@@ -164,6 +146,12 @@ variable "teleport_auth_token" {
 
 variable "use_kubeconfig" {
   description = "Should kubernetes/kubectl providers use local kubeconfig or credentials from cloud module"
+  type        = bool
+  default     = false
+}
+
+variable "dump_debug" {
+  description = "Dump debug info to files .debug-*.json"
   type        = bool
   default     = false
 }
