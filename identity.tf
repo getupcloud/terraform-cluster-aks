@@ -31,13 +31,14 @@ resource "azurerm_role_assignment" "aks_vnet_user_assigned_identity_ids" {
   skip_service_principal_aad_check = var.private_dns_zone_skip_service_principal_aad_check
 }
 
-resource "azurerm_role_assignment" "aks_system_assigned_principal_id_node" {
-  count                            = var.node_resource_group != "" ? 1 : 0
-  principal_id                     = module.cluster.identity.principal_id
-  role_definition_name             = "Contributor"
-  scope                            = data.azurerm_resource_group.node.id
-  skip_service_principal_aad_check = true
-}
+# This should be set by AKs itself when RG is created
+#resource "azurerm_role_assignment" "aks_system_assigned_principal_id_node" {
+#  count                            = var.node_resource_group != "" ? 1 : 0
+#  principal_id                     = module.cluster.identity.principal_id
+#  role_definition_name             = "Contributor"
+#  scope                            = "/subscriptions/${var.subscription_id}/resourceGroups/${var.node_resource_group}"
+#  skip_service_principal_aad_check = true
+#}
 
 resource "azurerm_role_assignment" "aks_system_assigned_principal_id_node_vnet" {
   count                            = var.node_vnet_resource_group != "" ? 1 : 0
