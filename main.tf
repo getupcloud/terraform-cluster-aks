@@ -91,19 +91,21 @@ module "cluster" {
     shell_script.pre_create
   ]
 
-  admin_username       = var.admin_username
-  client_id            = var.client_id
-  client_secret        = var.client_secret
-  cluster_name         = var.cluster_name
-  kubernetes_version   = var.kubernetes_version
-  network_plugin       = var.network_policy == "azure" ? "azure" : var.network_plugin
-  network_policy       = var.network_policy
-  orchestrator_version = var.default_node_pool.orchestrator_version != null ? var.default_node_pool.orchestrator_version : var.kubernetes_version
-  prefix               = var.prefix
-  public_ssh_key       = var.public_ssh_key
-  resource_group_name  = var.resource_group_name
-  sku_tier             = var.sku_tier
-  tags                 = var.tags
+  admin_username            = var.admin_username
+  client_id                 = var.client_id
+  client_secret             = var.client_secret
+  cluster_name              = var.cluster_name
+  kubernetes_version        = var.kubernetes_version
+  network_plugin            = var.network_policy == "azure" ? "azure" : var.network_plugin
+  network_policy            = var.network_policy
+  orchestrator_version      = var.default_node_pool.orchestrator_version != null ? var.default_node_pool.orchestrator_version : var.kubernetes_version
+  prefix                    = var.prefix
+  public_ssh_key            = var.public_ssh_key
+  resource_group_name       = var.resource_group_name
+  sku_tier                  = var.sku_tier
+  tags                      = var.tags
+  oidc_issuer_enabled       = var.oidc_issuer_enabled
+  workload_identity_enabled = var.workload_identity_enabled
 
   private_cluster_enabled          = var.private_cluster_enabled
   api_server_authorized_ip_ranges  = var.private_cluster_enabled ? null : var.api_server_authorized_ip_ranges
