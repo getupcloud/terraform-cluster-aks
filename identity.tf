@@ -41,8 +41,8 @@ resource "azurerm_role_assignment" "aks_vnet_user_assigned_identity_ids" {
 #}
 
 resource "azurerm_role_assignment" "aks_system_assigned_principal_id_node_vnet" {
-  count                            = var.node_vnet_resource_group != "" ? 1 : 0
-  principal_id                     = module.cluster.identity.principal_id
+  count                            = (local.has_user_assigned_identity && var.node_vnet_resource_group != "") ? 1 : 0
+  principal_id                     = azurerm_user_assigned_identity.aks_cluster_user_assigned_identity[var.identity_name].principal_id
   role_definition_name             = "Contributor"
   scope                            = data.azurerm_virtual_network.node_vnet[0].id
   skip_service_principal_aad_check = true
