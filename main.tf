@@ -53,10 +53,6 @@ data "azurerm_resource_group" "main" {
   name = var.resource_group_name
 }
 
-data "azurerm_resource_group" "node" {
-  name = var.node_resource_group != "" ? var.node_resource_group : data.azurerm_resource_group.main.name
-}
-
 data "azurerm_resource_group" "node_vnet" {
   name = var.node_vnet_resource_group != "" ? var.node_vnet_resource_group : data.azurerm_resource_group.main.name
 }
