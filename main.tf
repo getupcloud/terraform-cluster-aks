@@ -33,6 +33,7 @@ module "opsgenie" {
 
   opsgenie_enabled = var.opsgenie_enabled
   customer_name    = var.customer_name
+  cluster_name     = var.cluster_name
   owner_team_name  = var.opsgenie_team_name
 }
 
