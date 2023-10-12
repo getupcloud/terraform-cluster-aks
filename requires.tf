@@ -21,5 +21,10 @@ terraform {
       source  = "scottwinkler/shell"
       version = "~> 1"
     }
+
+    validation = {
+      source  = "tlkamp/validation"
+      version = "~> 1"
+    }
   }
 }
