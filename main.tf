@@ -15,7 +15,7 @@ module "flux" {
 }
 
 module "cronitor" {
-  source = "github.com/getupcloud/terraform-module-cronitor?ref=v2.0"
+  source = "github.com/getupcloud/terraform-module-cronitor?ref=v2.0.3"
 
   api_endpoint       = module.cluster.kube_admin_config.host
   cronitor_enabled   = var.cronitor_enabled
@@ -54,22 +54,42 @@ data "azurerm_resource_group" "main" {
   name = var.resource_group_name
 }
 
-data "azurerm_resource_group" "node_vnet" {
-  name = var.node_vnet_resource_group != "" ? var.node_vnet_resource_group : data.azurerm_resource_group.main.name
+###### Network ######
+
+locals {
+    ## check if any of the required vars was provided
+    user_subnet = (var.node_vnet_resource_group != null || var.node_vnet_name != null || var.node_subnet_name != null)
 }
 
-data "azurerm_virtual_network" "node_vnet" {
-  count               = var.node_vnet_name != null ? 1 : 0
+data "validation_error" "assert_subnet" {
+  condition = local.user_subnet ? ! (var.node_vnet_resource_group != null && var.node_vnet_name != null && var.node_subnet_name != null) : false
+  summary = "Either all or none of the vars node_vnet_resource_group, node_vnet_name, and node_subnet_name must be provided."
+  details = <<EOF
+var.node_vnet_resource_group=${format("%#v", var.node_vnet_resource_group)}
+var.node_vnet_name=${format("%#v", var.node_vnet_name)}
+var.node_subnet_name=${format("%#v", var.node_subnet_name)}
+EOF
+}
+
+data "azurerm_resource_group" "vnet" {
+  count = local.user_subnet ? 1 : 0
+  name  = var.node_vnet_resource_group
+}
+
+data "azurerm_virtual_network" "vnet" {
+  count               = local.user_subnet ? 1 : 0
   name                = var.node_vnet_name
-  resource_group_name = data.azurerm_resource_group.node_vnet.name
+  resource_group_name = data.azurerm_resource_group.vnet[0].name
 }
 
-data "azurerm_subnet" "node_subnet" {
-  count                = (var.node_subnet_name != null && var.node_vnet_name != null) ? 1 : 0
+data "azurerm_subnet" "subnet" {
+  count                = local.user_subnet ? 1 : 0
   name                 = var.node_subnet_name
-  virtual_network_name = data.azurerm_virtual_network.node_vnet[0].name
-  resource_group_name  = data.azurerm_virtual_network.node_vnet[0].resource_group_name
+  virtual_network_name = data.azurerm_virtual_network.vnet[0].name
+  resource_group_name  = data.azurerm_virtual_network.vnet[0].resource_group_name
 }
+
+##################
 
 data "azuread_group" "aks_cluster_admins" {
   for_each     = toset(var.rbac_aad_admin_group_names)
@@ -130,7 +150,7 @@ module "cluster" {
   os_disk_type           = var.default_node_pool.os_disk_type
   enable_node_public_ip  = var.default_node_pool.enable_node_public_ip
   enable_host_encryption = var.default_node_pool.enable_host_encryption
-  vnet_subnet_id         = length(data.azurerm_subnet.node_subnet) > 0 ? data.azurerm_subnet.node_subnet[0].id : try(var.default_node_pool.vnet_subnet_id, null)
+  vnet_subnet_id         = length(data.azurerm_subnet.subnet) > 0 ? data.azurerm_subnet.subnet[0].id : try(var.default_node_pool.vnet_subnet_id, null)
   dns_service_ip         = var.dns_service_ip
   docker_bridge_cidr     = var.docker_bridge_cidr
   outbound_type          = var.outbound_type
@@ -184,7 +204,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "node_pools" {
   os_disk_type           = each.value.os_disk_type
   enable_node_public_ip  = each.value.enable_node_public_ip
   enable_host_encryption = each.value.enable_host_encryption
-  vnet_subnet_id         = length(data.azurerm_subnet.node_subnet) > 0 ? data.azurerm_subnet.node_subnet[0].id : try(var.default_node_pool.vnet_subnet_id, null)
+  vnet_subnet_id         = length(data.azurerm_subnet.subnet) > 0 ? data.azurerm_subnet.subnet[0].id : try(var.default_node_pool.vnet_subnet_id, null)
   tags                   = merge(var.tags, try(each.value.node_tags, {}))
 
   lifecycle {
