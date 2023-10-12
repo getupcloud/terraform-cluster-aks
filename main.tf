@@ -57,14 +57,14 @@ data "azurerm_resource_group" "main" {
 ###### Network ######
 
 locals {
-    ## check if any of the required vars was provided
-    user_subnet = (var.node_vnet_resource_group != null || var.node_vnet_name != null || var.node_subnet_name != null)
+  ## check if any of the required vars was provided
+  user_subnet = (var.node_vnet_resource_group != null || var.node_vnet_name != null || var.node_subnet_name != null)
 }
 
 data "validation_error" "assert_subnet" {
-  condition = local.user_subnet ? ! (var.node_vnet_resource_group != null && var.node_vnet_name != null && var.node_subnet_name != null) : false
-  summary = "Either all or none of the vars node_vnet_resource_group, node_vnet_name, and node_subnet_name must be provided."
-  details = <<EOF
+  condition = local.user_subnet ? !(var.node_vnet_resource_group != null && var.node_vnet_name != null && var.node_subnet_name != null) : false
+  summary   = "Either all or none of the vars node_vnet_resource_group, node_vnet_name, and node_subnet_name must be provided."
+  details   = <<EOF
 var.node_vnet_resource_group=${format("%#v", var.node_vnet_resource_group)}
 var.node_vnet_name=${format("%#v", var.node_vnet_name)}
 var.node_subnet_name=${format("%#v", var.node_subnet_name)}
