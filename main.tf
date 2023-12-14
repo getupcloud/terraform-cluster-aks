@@ -191,6 +191,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "node_pools" {
 
   kubernetes_cluster_id  = module.cluster.aks_id
   name                   = each.key
+  orchestrator_version   = var.default_node_pool.orchestrator_version != null ? var.default_node_pool.orchestrator_version : var.kubernetes_version
   enable_auto_scaling    = each.value.enable_auto_scaling
   min_count              = each.value.min_count
   max_count              = each.value.max_count
