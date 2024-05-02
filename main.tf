@@ -14,29 +14,6 @@ module "flux" {
 
 }
 
-module "cronitor" {
-  source = "github.com/getupcloud/terraform-module-cronitor?ref=v2.0.3"
-
-  api_endpoint       = module.cluster.kube_admin_config.host
-  cronitor_enabled   = var.cronitor_enabled
-  cluster_name       = var.cluster_name
-  cluster_sla        = var.cluster_sla
-  customer_name      = var.customer_name
-  suffix             = "aks"
-  tags               = [module.cluster.location]
-  pagerduty_key      = var.cronitor_pagerduty_key
-  notification_lists = var.cronitor_notification_lists
-}
-
-module "opsgenie" {
-  source = "github.com/getupcloud/terraform-module-opsgenie?ref=v1.2"
-
-  opsgenie_enabled = var.opsgenie_enabled
-  customer_name    = var.customer_name
-  cluster_name     = var.cluster_name
-  owner_team_name  = var.opsgenie_team_name
-}
-
 module "teleport-agent" {
   source = "github.com/getupcloud/terraform-module-teleport-agent-config?ref=v0.3"
 
