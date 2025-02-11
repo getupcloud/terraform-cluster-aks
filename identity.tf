@@ -32,7 +32,7 @@ resource "azurerm_role_assignment" "aks_vnet_user_assigned_identity_ids" {
 }
 
 resource "azurerm_role_assignment" "aks_system_assigned_principal_id_node_vnet" {
-  count                            = local.user_subnet ? 1 : 0
+  count                            = (local.user_subnet && (length(var.identity_ids) == 0)) ? 1 : 0
   principal_id                     = module.cluster.identity.principal_id
   role_definition_name             = "Network Contributor"
   scope                            = data.azurerm_subnet.subnet[0].id
